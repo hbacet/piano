@@ -1,0 +1,12 @@
+version: '2'
+services:
+    piano-postgresql:
+        container_name: piano-postgresql
+        image: postgres:9.5.1
+        # volumes:
+        #     - ~/volumes/jhipster/piano/postgresql/:/var/lib/postgresql/
+        environment:
+            - POSTGRES_USER=piano
+            - POSTGRES_PASSWORD=
+        ports:
+            - 5432:5432

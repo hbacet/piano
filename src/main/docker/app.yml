@@ -1,0 +1,15 @@
+version: '2'
+services:
+    piano-app:
+        image: piano
+        external_links:
+            - piano-postgresql:postgresql
+        environment:
+            - SPRING_PROFILES_ACTIVE=prod
+            - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/piano
+        ports:
+            - 8080:8080
+    piano-postgresql:
+        extends:
+            file: postgresql.yml
+            service: piano-postgresql
