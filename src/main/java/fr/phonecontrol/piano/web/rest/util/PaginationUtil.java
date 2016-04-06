@@ -1,8 +1,11 @@
 package fr.phonecontrol.piano.web.rest.util;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 
+import java.awt.print.Pageable;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -37,5 +40,10 @@ public class PaginationUtil {
         link += "<" + (new URI(baseUrl + "?page=" + 0 + "&size=" + page.getSize())).toString() + ">; rel=\"first\"";
         headers.add(HttpHeaders.LINK, link);
         return headers;
+    }
+
+    public static PageRequest getPageable(int page, int max, String sidx, String sord){
+        Sort.Direction sortOrder = sord.toUpperCase().equals("DESC") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        return new PageRequest(page - 1, max, sortOrder, sidx);
     }
 }

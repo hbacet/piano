@@ -19,7 +19,7 @@
         return directive;
 
         function linkFunc(scope, element, attrs) {
-            var gridId, wrapperId, tableId, table, pagerId, options;
+            var gridId, wrapperId, tableId, table, pagerId, options, colModel, colNames;
 
             gridId = "users-grid";
             wrapperId = 'jqgrid-' + gridId;
@@ -31,26 +31,50 @@
             element.find('.jqgrid-pagination').attr('id', pagerId);
             element.attr('id', wrapperId);
 
+            /*, "Email", "Activated", "Language"*/
+            colNames = ["Login", "First Name", "Last Name"];
+            colModel = [{
+                index: "login",
+                name: "login"
+            },{
+                index: "firstName",
+                name: "firstName"
+            },{
+                index: "lastName",
+                name: "lastName"
+            }];
+
             options = {
-                data: scope.gridData.data,
-                jsonReader: scope.gridData.jsonReader,
-                datatype: "local",
-                editurl: 'clientArray',
+                url: 'api/users/jqgrid',
                 height: 'auto',
-                colNames: scope.gridData.colNames || [],
-                colModel: scope.gridData.colModel || [],
-                multiselect: true,
-                ignoreCase: true,
-                sortname: "name",
-                sortorder: "asc",
-                sortable: true,
+                colNames: colNames,
+                colModel: colModel,
                 rowNum: 10,
                 rowList: [10, 20, 30],
                 pager: '#' + pagerId,
+                sortname: 'id',
                 toolbarfilter: true,
                 viewrecords: true,
+                sortorder: "asc",
+                datatype: "json",
+                loadBeforeSend: function (jqXHR, settings) {
+                    try {
+                        jqXHR.setRequestHeader("Authorization", 'Bearer ' + JSON.parse(localStorage.getItem("jhi-authenticationToken")).access_token);
+                    } catch (e) {
+                    }
+                },
+                loadError: function (xhr, status, error) {
+                },
+                multiselect: true,
+                autowidth: true
             };
             table.jqGrid(options);
+            table.jqGrid('navGrid', '#' + pagerId, {
+                edit: true,
+                add: true,
+                del: true,
+                search: false
+            });
         }
     }
 })();

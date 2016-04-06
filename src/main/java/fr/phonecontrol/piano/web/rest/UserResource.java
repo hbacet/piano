@@ -166,7 +166,7 @@ public class UserResource {
 
     /**
      * GET  /users : get all users.
-     * 
+     *
      * @param pageable the pagination information
      * @return the ResponseEntity with status 200 (OK) and with body all users
      * @throws URISyntaxException if the pagination headers couldnt be generated
@@ -218,5 +218,20 @@ public class UserResource {
         log.debug("REST request to delete User: {}", login);
         userService.deleteUserInformation(login);
         return ResponseEntity.ok().headers(HeaderUtil.createAlert( "userManagement.deleted", login)).build();
+    }
+
+
+    @RequestMapping(value = "/users/jqgrid",
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    @Transactional(readOnly = true)
+    public ResponseEntity<List<ManagedUserDTO>> getAllJQGridUsers(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
+                                                                  @RequestParam(value = "rows", required = false, defaultValue = "10") int max,
+                                                                  @RequestParam(value = "sidx", required = false, defaultValue = "id") String sidx,
+                                                                  @RequestParam(value = "sord", required = false, defaultValue = "asc") String sord)
+        throws URISyntaxException {
+        Pageable pageable = PaginationUtil.getPageable(page, max, sidx, sord);
+        return getAllUsers(pageable);
     }
 }
